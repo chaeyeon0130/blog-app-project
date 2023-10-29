@@ -4,6 +4,7 @@ import com.group.blogapp.auth.dto.AuthInfo
 import com.group.blogapp.config.annotation.Auth
 import com.group.blogapp.user.dto.request.UserSigninRequest
 import com.group.blogapp.user.dto.request.UserSignupRequest
+import com.group.blogapp.user.dto.response.UserReissueResponse
 import com.group.blogapp.user.dto.response.UserSigninResponse
 import com.group.blogapp.user.dto.response.UserSignupResponse
 
@@ -33,6 +34,12 @@ class UserController(
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
     fun deleteUser(@Auth authInfo: AuthInfo) {
-        userService.deleteUser(authInfo.email)
+        userService.deleteUser(authInfo)
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/reissue")
+    fun reissue(@Auth authInfo: AuthInfo): UserReissueResponse {
+        return userService.reissue(authInfo)
     }
 }

@@ -28,7 +28,7 @@ class JWTRequestFilter(
                         throw AuthenticationException("Authorization Header is missing.")
 
             val token = extractAccessToken(authorizationHeader)
-            val authentication = jwtVerifier.verify(token, true)
+            val authentication = jwtVerifier.verify(token)
             val context = SecurityContextHolder.getContext()
             context.authentication = authentication
             filterChain.doFilter(request, response)

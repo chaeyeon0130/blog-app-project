@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
 import java.util.function.Function
+import javax.servlet.http.HttpServletRequest
 
 @Component
 class JwtVerifier(
@@ -76,17 +77,12 @@ class JwtVerifier(
     }
 
     @Transactional
-    fun verify(token: String, isAccessToken: Boolean): Authentication {
+    fun verify(token: String): Authentication {
         extractAllClaims(token)
+        val type = extractType(token)
 
-        if (isAccessToken) {
-            if (extractType(token) != JwtType.ACCESS.type) {
-                throw AuthenticationException("주어진 JWT 토큰이 Access Token이 아닙니다.")
-            }
-        } else {
-            if (extractType(token) != JwtType.REFRESH.type) {
-                throw AuthenticationException("주어진 JWT 토큰이 Refresh Token이 아닙니다.")
-            }
+        if (type != JwtType.ACCESS.type && type != JwtType.REFRESH.type) {
+            throw AuthenticationException("주어진 JWT 토큰의 Type은 Access 또는 Refresh 이어야 합니다.")
         }
 
         val role: String = extractRole(token)

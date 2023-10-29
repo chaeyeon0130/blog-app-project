@@ -1,10 +1,12 @@
 package com.group.blogapp.user.service
 
+import com.group.blogapp.auth.dto.AuthInfo
 import com.group.blogapp.auth.tools.JwtProvider
 import com.group.blogapp.user.domain.User
 import com.group.blogapp.user.domain.UserRepository
 import com.group.blogapp.user.dto.request.UserSignupRequest
 import com.group.blogapp.user.dto.request.UserSigninRequest
+import com.group.blogapp.user.dto.response.UserReissueResponse
 import com.group.blogapp.user.dto.response.UserSigninResponse
 import com.group.blogapp.user.dto.response.UserSignupResponse
 import com.group.blogapp.user.exception.UserAuthenticationException
@@ -65,8 +67,20 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun deleteUser(email: String) {
-        val foundUser = findUser(email)
+    override fun deleteUser(authInfo: AuthInfo) {
+        val foundUser = findUser(authInfo.email)
         userRepository.delete(foundUser)
+    }
+
+    @Transactional
+    override fun reissue(authInfo: AuthInfo): UserReissueResponse {
+        val foundUser = findUser(authInfo.email)
+
+        val accessToken = jwtProvider.generateAccessToken(foundUser.email, foundUser.role.role)
+        val refreshToken = jwtProvider.generateRefreshToken(foundUser.email, foundUser.role.role)
+
+        foundUser.addRefreshToken(refreshToken)
+
+        return UserReissueResponse.of(accessToken, refreshToken)
     }
 }
