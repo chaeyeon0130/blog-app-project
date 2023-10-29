@@ -3,10 +3,10 @@ package com.group.blogapp.article.service
 import com.group.blogapp.article.domain.Article
 import com.group.blogapp.article.domain.ArticleRepository
 import com.group.blogapp.article.dto.request.ArticleCreateRequest
-import com.group.blogapp.article.dto.request.ArticleDeleteRequest
 import com.group.blogapp.article.dto.request.ArticleUpdateRequest
 import com.group.blogapp.article.dto.response.ArticleResponse
 import com.group.blogapp.article.exception.ArticleNotFoundException
+import com.group.blogapp.auth.dto.AuthInfo
 import com.group.blogapp.user.service.UserService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -18,8 +18,8 @@ class ArticleServiceImpl(
     private val userService: UserService
 ) : ArticleService{
     @Transactional
-    override fun saveArticle(request: ArticleCreateRequest): ArticleResponse {
-        val foundUser = userService.authenticateUser(request.email, request.password)
+    override fun saveArticle(authInfo: AuthInfo, request: ArticleCreateRequest): ArticleResponse {
+        val foundUser = userService.findUser(authInfo.email)
 
         val newArticle = Article(request.title, request.content)
         newArticle.user = foundUser
@@ -31,8 +31,6 @@ class ArticleServiceImpl(
 
     @Transactional
     override fun updateArticle(id: Long, request: ArticleUpdateRequest): ArticleResponse {
-        userService.authenticateUser(request.email, request.password)
-
         val foundArticle = findArticle(id)
 
         foundArticle.title = request.title
@@ -42,9 +40,7 @@ class ArticleServiceImpl(
     }
 
     @Transactional
-    override fun deleteArticle(id: Long, request: ArticleDeleteRequest) {
-        userService.authenticateUser(request.email, request.password)
-
+    override fun deleteArticle(id: Long) {
         val foundArticle = findArticle(id)
 
         articleRepository.delete(foundArticle)

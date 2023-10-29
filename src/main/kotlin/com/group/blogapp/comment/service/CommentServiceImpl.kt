@@ -1,11 +1,11 @@
 package com.group.blogapp.comment.service
 
 import com.group.blogapp.article.service.ArticleService
+import com.group.blogapp.auth.dto.AuthInfo
 import com.group.blogapp.comment.domain.Comment
 import com.group.blogapp.comment.domain.CommentQuerydslRepository
 import com.group.blogapp.comment.domain.CommentRepository
 import com.group.blogapp.comment.dto.request.CommentCreateRequest
-import com.group.blogapp.comment.dto.request.CommentDeleteRequest
 import com.group.blogapp.comment.dto.request.CommentUpdateRequest
 import com.group.blogapp.comment.dto.response.CommentResponse
 import com.group.blogapp.comment.exception.CommentNotFoundException
@@ -21,8 +21,8 @@ class CommentServiceImpl(
     private val userService: UserService
 ) : CommentService{
     @Transactional
-    override fun saveComment(articleId: Long, request: CommentCreateRequest): CommentResponse {
-        val foundUser = userService.authenticateUser(request.email, request.password)
+    override fun saveComment(authInfo: AuthInfo, articleId: Long, request: CommentCreateRequest): CommentResponse {
+        val foundUser = userService.findUser(authInfo.email)
 
         val foundArticle = articleService.findArticle(articleId)
 
@@ -37,8 +37,6 @@ class CommentServiceImpl(
 
     @Transactional
     override fun updateComment(articleId: Long, commentId: Long, request: CommentUpdateRequest): CommentResponse {
-        userService.authenticateUser(request.email, request.password)
-
         val foundComment = commentQuerydslRepository.findByArticleIdAndCommentId(articleId, commentId) ?: throw CommentNotFoundException("Comment is not found.")
 
         foundComment.content = request.content
@@ -47,9 +45,7 @@ class CommentServiceImpl(
     }
 
     @Transactional
-    override fun deleteComment(articleId: Long, commentId: Long, request: CommentDeleteRequest) {
-        userService.authenticateUser(request.email, request.password)
-
+    override fun deleteComment(articleId: Long, commentId: Long) {
         val foundComment = commentQuerydslRepository.findByArticleIdAndCommentId(articleId, commentId) ?: throw CommentNotFoundException("Comment is not found.")
 
         commentRepository.delete(foundComment)

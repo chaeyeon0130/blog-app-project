@@ -1,10 +1,11 @@
 package com.group.blogapp.article.controller
 
 import com.group.blogapp.article.dto.request.ArticleCreateRequest
-import com.group.blogapp.article.dto.request.ArticleDeleteRequest
 import com.group.blogapp.article.dto.request.ArticleUpdateRequest
 import com.group.blogapp.article.dto.response.ArticleResponse
 import com.group.blogapp.article.service.ArticleService
+import com.group.blogapp.auth.dto.AuthInfo
+import com.group.blogapp.config.annotation.Auth
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -16,8 +17,9 @@ class ArticleController(
 ) {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/articles")
-    fun saveArticle(@Valid @RequestBody request: ArticleCreateRequest): ArticleResponse {
-        return articleService.saveArticle(request)
+    fun saveArticle(@Auth authInfo: AuthInfo,
+                    @Valid @RequestBody request: ArticleCreateRequest): ArticleResponse {
+        return articleService.saveArticle(authInfo, request)
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -29,9 +31,7 @@ class ArticleController(
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/articles/{id}")
-    fun deleteArticle(@PathVariable("id") id: Long,
-                      @Valid @RequestBody request: ArticleDeleteRequest
-    ) {
-        articleService.deleteArticle(id, request)
+    fun deleteArticle(@PathVariable("id") id: Long) {
+        articleService.deleteArticle(id)
     }
 }
