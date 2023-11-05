@@ -4,7 +4,9 @@ import com.group.blogapp.auth.tools.JwtVerifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -40,6 +42,19 @@ class SecurityConfig(
             .apply(JWTRequestSecurityConfig(jwtVerifier, entryPoint))
 
         return httpSecurity.build()
+    }
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer {
+            web: WebSecurity ->
+            web.ignoring()
+                .antMatchers(
+                    "/v3/api-docs",
+                    "/swagger-ui/**",
+                    "/swagger-resources/**"
+                )
+        }
     }
 
     @Bean

@@ -1,7 +1,11 @@
 package com.group.blogapp.user.dto.response
 
+import io.swagger.annotations.ApiModelProperty
+
 data class UserReissueResponse(
+    @ApiModelProperty(example = "Bearer eyJhbGciOiJIUzI1NiJ9")
     val accessToken: String,
+    @ApiModelProperty(example = "Bearer eyJhbGciOiJIUzI1NiJ9")
     val refreshToken: String
 ) {
     companion object {

@@ -56,6 +56,10 @@ dependencies {
 
 	// Reflection
 	compileOnly("org.jetbrains.kotlin:kotlin-reflect")
+
+	// Swagger
+	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
 }
 
 tasks.withType<KotlinCompile> {
