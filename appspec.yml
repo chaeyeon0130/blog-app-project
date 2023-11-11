@@ -3,6 +3,7 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/yourssu_project
+    overwrite: yes
 permissions:
   - object: /home/ubuntu/yourssu_project
     owner: ubuntu
@@ -11,8 +12,10 @@ permissions:
 hooks:
   BeforeInstall:
     - location: scripts/delete-before-artifacts.sh
+      runas: ubuntu
   AfterInstall:
     - location: scripts/change-script-permissions.sh
+      runas: ubuntu
   ApplicationStart:
     - location: scripts/run-application.sh
       runas: ubuntu
