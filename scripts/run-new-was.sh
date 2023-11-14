@@ -17,7 +17,10 @@ if [ ! -z ${TARGET_PID} ]; then
   sudo kill -9 ${TARGET_PID}
 fi
 
-source /home/ubuntu/.env
+CURRENT_PID=$(lsof -Fp -i TCP:${CURRENT_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-9]+')
+echo "> Kill ${CURRENT_PORT}."
+sudo kill -9 ${CURRENT_PID}
+
 nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/yourssu_project/build/libs/blogapp-0.0.1-SNAPSHOT.jar 1>>/home/ubuntu/log/spring-log.log 2>>/home/ubuntu/log/spring-error.log &
 # 프로세스가 사용 중인지 확인
 if lsof -Pi :${TARGET_PORT} -sTCP:LISTEN -t >/dev/null; then
