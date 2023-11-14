@@ -12,8 +12,11 @@ permissions:
 hooks:
   ApplicationStart:
     - location: scripts/run-new-was.sh
+      timeout: 60
       runas: ubuntu
     - location: scripts/health-check.sh
+      timeout: 60
       runas: ubuntu
     - location: scripts/switch.sh
+      timeout: 60
       runas: ubuntu
