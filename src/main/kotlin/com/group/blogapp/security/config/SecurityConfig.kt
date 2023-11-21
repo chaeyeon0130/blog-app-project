@@ -3,6 +3,7 @@ package com.group.blogapp.security.config
 import com.group.blogapp.auth.tools.JwtVerifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -37,6 +38,7 @@ class SecurityConfig(
             .antMatchers("/users/signin").permitAll()
             .antMatchers("/users/signup").permitAll()
             .antMatchers("/h2-console/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
             .anyRequest().authenticated() // 그 외 인증 없이 접근 X
             .and()
             .apply(JWTRequestSecurityConfig(jwtVerifier, entryPoint))

@@ -2,9 +2,11 @@ package com.group.blogapp.user.controller
 
 import com.group.blogapp.auth.dto.AuthInfo
 import com.group.blogapp.config.annotation.Auth
+import com.group.blogapp.user.dto.request.UserSearchCondition
 import com.group.blogapp.user.dto.request.UserSigninRequest
 import com.group.blogapp.user.dto.request.UserSignupRequest
 import com.group.blogapp.user.dto.response.UserReissueResponse
+import com.group.blogapp.user.dto.response.UserSearchResponse
 import com.group.blogapp.user.dto.response.UserSigninResponse
 import com.group.blogapp.user.dto.response.UserSignupResponse
 
@@ -67,5 +69,11 @@ class UserController(
     @PatchMapping("/reissue")
     fun reissue(@ApiIgnore @Auth authInfo: AuthInfo): UserReissueResponse {
         return userService.reissue(authInfo)
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    fun searchUser(condition: UserSearchCondition): List<UserSearchResponse> {
+        return userService.searchUser(condition)
     }
 }

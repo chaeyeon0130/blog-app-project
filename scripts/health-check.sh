@@ -18,20 +18,20 @@ do
 
   if [ $UP_COUNT -ge 1 ]
   then
-      echo "> Health check 성공"
+      echo "> Health check success"
       break
   else
-      echo "> Health check의 응답을 알 수 없거나 혹은 status가 UP이 아닙니다."
+      echo "> Health check response is unknown or status is not UP"
       echo "> Health check: ${RESPONSE}"
   fi
 
   if [ $RETRY_COUNT -eq 10 ]
   then
-echo "> Health check 실패. "
-    echo "> Nginx에 연결하지 않고 배포를 종료합니다."
+    echo "> Health check failed"
+    echo "> Exit the deployment without connecting to Nginx"
     exit 1
   fi
 
-  echo "> Health check 연결 실패. 재시도..."
+  echo "> Health check connection failed. Retry..."
   sleep 10
 done

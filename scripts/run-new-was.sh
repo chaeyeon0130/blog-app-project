@@ -23,11 +23,5 @@ sudo kill -9 ${CURRENT_PID}
 
 source /home/ubuntu/.env
 nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/yourssu_project/build/libs/blogapp-0.0.1-SNAPSHOT.jar 1>>/home/ubuntu/log/spring-log.log 2>>/home/ubuntu/log/spring-error.log &
-# 프로세스가 사용 중인지 확인
-if lsof -Pi :${TARGET_PORT} -sTCP:LISTEN -t >/dev/null; then
-  echo "> Process is running on port ${TARGET_PORT}."
-else
-  echo "> No process is running on port ${TARGET_PORT}."
-fi
 echo "> Now new WAS runs at ${TARGET_PORT}."
 exit 0

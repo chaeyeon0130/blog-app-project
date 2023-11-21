@@ -4,9 +4,11 @@ import com.group.blogapp.auth.dto.AuthInfo
 import com.group.blogapp.auth.tools.JwtProvider
 import com.group.blogapp.user.domain.User
 import com.group.blogapp.user.domain.UserRepository
+import com.group.blogapp.user.dto.request.UserSearchCondition
 import com.group.blogapp.user.dto.request.UserSignupRequest
 import com.group.blogapp.user.dto.request.UserSigninRequest
 import com.group.blogapp.user.dto.response.UserReissueResponse
+import com.group.blogapp.user.dto.response.UserSearchResponse
 import com.group.blogapp.user.dto.response.UserSigninResponse
 import com.group.blogapp.user.dto.response.UserSignupResponse
 import com.group.blogapp.user.exception.UserAuthenticationException
@@ -82,5 +84,10 @@ class UserServiceImpl(
         foundUser.addRefreshToken(refreshToken)
 
         return UserReissueResponse.of(accessToken, refreshToken)
+    }
+
+    @Transactional(readOnly = true)
+    override fun searchUser(condition: UserSearchCondition): List<UserSearchResponse> {
+        return userRepository.searchByWhere(condition)
     }
 }
